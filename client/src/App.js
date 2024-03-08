@@ -1,22 +1,28 @@
+// src/App.js
+
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import config from './config';
 
 function App() {
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState('');
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/todos')
+        fetchTodos();
+    }, []);
+
+    const fetchTodos = () => {
+        fetch(`${config.apiUrl}/api/todos`)
             .then((res) => res.json())
             .then((data) => setTodos(data))
             .catch((error) => {
                 console.error('Error fetching todos:', error);
-                setTodos([]); // Set default value or handle error appropriately
+                setTodos([]);
             });
-    }, []);
+    };
 
     const handleAddTodo = () => {
-        fetch('http://localhost:5000/api/todos', {
+        fetch(`${config.apiUrl}/api/todos`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,7 +38,7 @@ function App() {
     };
 
     const handleDeleteTodo = (id) => {
-        fetch(`http://localhost:5000/api/todos/${id}`, {
+        fetch(`${config.apiUrl}/api/todos/${id}`, {
             method: 'DELETE',
         })
             .then(() => setTodos(todos.filter((todo) => todo._id !== id)))
@@ -40,7 +46,7 @@ function App() {
     };
 
     const handleToggleComplete = (id, completed) => {
-        fetch(`http://localhost:5000/api/todos/${id}`, {
+        fetch(`${config.apiUrl}/api/todos/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
